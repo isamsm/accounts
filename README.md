@@ -2,7 +2,7 @@
 
 ## Sobre
 
-### Projeto de um banco feito em linha de comando com Node durante o curso de NodeJS do zero a maestria do Matheus Battisti.
+### Projeto de um banco feito em linha de comando com Node durante o curso "NodeJS do zero a maestria" do Matheus Battisti.
 
 ## Como usar
 
