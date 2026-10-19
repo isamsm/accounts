@@ -77,6 +77,7 @@ const buildAccount = () => {
             )
 
             console.log(chalk.bgCyan.bold('Parabéns sua conta foi criada!'))
+            operation()
         }
     })
     .catch((err) => console.log(err))
@@ -98,31 +99,33 @@ const makeDeposit = () => {
     ]).then((answer) => {
         times = times - 1
 
-        if(times == 0) {
-            console.log(chalk.red.bold('Número de tentativas excedido, tente novamente mais tarde'))
-            times = 3
-            process.exit()
-        } else {
-            const accountName = answer['accountName']
-            const accountNumber = answer['accountNumber']
+        const accountName = answer['accountName']
+        const accountNumber = answer['accountNumber']
 
-            //verify is account exist
-            if(!checkAccount(accountName, accountNumber)) {
+        //verify is account exist
+        if(!checkAccount(accountName, accountNumber)) {
+            if(times == 0) {
+                console.log(chalk.red.bold('Número de tentativas excedido, tente novamente mais tarde'))
+                times = 3
+                process.exit()
+            } else {
                 return makeDeposit()
             }
-
-            inquirer.prompt([
-                {
-                    name: 'amount',
-                    message: 'Valor de deposito:'
-                }
-            ]).then((answer) => {
-                const amount = answer['amount']
-
-                //add an amount
-                addAmount(accountName, accountNumber, amount)
-            }).catch((err) => console.log(err))
         }
+
+        times = 3
+
+        inquirer.prompt([
+            {
+                name: 'amount',
+                message: 'Valor de deposito:'
+            }
+        ]).then((answer) => {
+            const amount = answer['amount']
+
+            //add an amount
+            addAmount(accountName, accountNumber, amount)
+        }).catch((err) => console.log(err))
     }).catch((err) => console.log(err))
 }
 
@@ -140,22 +143,24 @@ const checkBalance = () => {
     ]).then((answer) => {
         times = times - 1
 
-        if(times == 0) {
-            console.log(chalk.red.bold('Número de tentativas excedido, tente novamente mais tarde'))
-            times = 3
-            process.exit()
-        } else {
-            const accountName = answer['accountName']
-            const accountNumber = answer['accountNumber']
+        const accountName = answer['accountName']
+        const accountNumber = answer['accountNumber']
 
-            //verify is account exist
-            if(!checkAccount(accountName, accountNumber)) {
-                return checkBalance()
+        //verify is account exist
+        if(!checkAccount(accountName, accountNumber)) {
+            if(times == 0) {
+                console.log(chalk.red.bold('Número de tentativas excedido, tente novamente mais tarde'))
+                times = 3
+                process.exit()
             } else {
-                const accountData = getAccount(accountName, accountNumber)
-
-                console.log(chalk.bgCyan.bold(`O saldo da sua conta é de R$${accountData.balance}`))
+                return checkBalance()
             }
+        } else {
+            times = 3
+            const accountData = getAccount(accountName, accountNumber)
+
+            console.log(chalk.bgCyan.bold(`O saldo da sua conta é de R$${accountData.balance}`))
+            operation()
         }
     }).catch((err) => console.log(err))
 }
@@ -174,31 +179,33 @@ const withdraw = () => {
     ]).then((answer) => {
         times = times - 1
 
-        if(times == 0) {
-            console.log(chalk.red.bold('Número de tentativas excedido, tente novamente mais tarde'))
-            times = 3
-            process.exit()
-        } else {
-            const accountName = answer['accountName']
-            const accountNumber = answer['accountNumber']
+        const accountName = answer['accountName']
+        const accountNumber = answer['accountNumber']
 
-            //verify is account exist
-            if(!checkAccount(accountName, accountNumber)) {
+        //verify is account exist
+        if(!checkAccount(accountName, accountNumber)) {
+            if(times == 0) {
+                console.log(chalk.red.bold('Número de tentativas excedido, tente novamente mais tarde'))
+                times = 3
+                process.exit()
+            } else {
                 return withdraw()
             }
-
-            inquirer.prompt([
-                {
-                    name: 'amount',
-                    message: 'Valor de retirada:'
-                }
-            ]).then((answer) => {
-                const amount = answer['amount']
-
-                //get an amount
-                getAmount(accountName, accountNumber, amount)
-            }).catch((err) => console.log(err))
         }
+
+        times = 3
+
+        inquirer.prompt([
+            {
+                name: 'amount',
+                message: 'Valor de retirada:'
+            }
+        ]).then((answer) => {
+            const amount = answer['amount']
+
+            //get an amount
+            getAmount(accountName, accountNumber, amount)
+        }).catch((err) => console.log(err))
     }).catch((err) => console.log(err))
 }
 
@@ -228,6 +235,7 @@ const addAmount = (accountName, accountNumber, amount) => {
     })
 
     console.log(chalk.cyan.bold(`O valor de R$${amount} foi depositado em sua conta!`))
+    operation()
 }
 
 //get account
@@ -258,4 +266,5 @@ const getAmount = (accountName, accountNumber, amount) => {
     })
 
     console.log(chalk.cyan.bold(`O valor de R$${amount} foi sacado de sua conta!`))
+    operation()
 }
